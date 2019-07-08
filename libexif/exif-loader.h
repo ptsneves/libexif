@@ -62,6 +62,13 @@ void        exif_loader_ref     (ExifLoader *loader);
  */
 void        exif_loader_unref   (ExifLoader *loader);
 
+/*
+ * Awesome function that returns the exif size in the file and
+ * sets up a loader
+ */
+unsigned int
+exif_loader_write_fd (ExifLoader *l, int fd);
+
 /*! Load a file into the given #ExifLoader from the filesystem.
  * The relevant data is copied in raw form into the #ExifLoader.
  *
