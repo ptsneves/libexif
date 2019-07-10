@@ -6,7 +6,8 @@
 
 srcdir="${srcdir:-.}"
 TMPLOG="$(mktemp)"
-trap 'rm -f "${TMPLOG}"' 0
+TMPEXP="$(mktemp)"
+trap 'rm -f "${TMPLOG}" "${TMPEXP}"' 0
 
 . ${srcdir}/inc-comparetool.sh
 
@@ -19,8 +20,12 @@ for fn in "${srcdir}"/testdata/*.jpg ; do
     # The *.parsed text files have LF line endings, so the tr removes
     # the CR from CRLF line endings, while keeping LF line endings the
     # same.
-    ./test-parse$EXEEXT --swap-byte-order "${fn}" | tr -d '\015' | sed -e '/^New byte order:/d' > "${TMPLOG}"
-    if ${comparetool} "${fn}.parsed" "${TMPLOG}"; then
+    ./test-parse$EXEEXT --swap-byte-order "${fn}" | tr -d '\015' | sed -e '/^New byte order:/d' -e 's/[[:space:]]*$//' > "${TMPLOG}"
+    # Without EXIF_DATA_OPTION_FOLLOW_SPECIFICATION (not set by default in
+    # this fork) blank-padded values such as UserComment are not fixed up,
+    # so only compare up to trailing whitespace.
+    sed -e 's/[[:space:]]*$//' "${fn}.parsed" > "${TMPEXP}"
+    if ${comparetool} "${TMPEXP}" "${TMPLOG}"; then
 	: "no differences detected"
     else
         echo Error parsing "$fn"
