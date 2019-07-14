@@ -83,6 +83,7 @@ static void dump_makernote(ExifData *d) {
 /** Run EXIF parsing test on the given file. */
 static void test_parse(const char *filename, void *callback_data, int swap)
 {
+  const char *dump_prefix;
   ExifData *d;
 
   /* Skip over path to display only the file name */
@@ -116,26 +117,39 @@ static void test_parse(const char *filename, void *callback_data, int swap)
   exif_data_foreach_content(d, data_foreach_func, callback_data);
 
   dump_makernote(d);
-  ExifParams p;
-  FILE *fp_xml;
-  FILE *fp_json;
-  fp_xml = fopen("dump.xml", "w+");
-  if (!fp_xml) {
-    fprintf(stderr, "Could not open file for xml dump. Err %d. Exiting\n", errno);
-    exit(1);
-  }
-  p.fp = fp_xml;
-  exif_action_dump_xml(d, p);
-  fclose(fp_xml);
+  /* When TEST_PARSE_DUMP_PREFIX is set, also dump the data with the xml and
+   * json actions to <prefix>.xml and <prefix>.json (see parse-regression.sh).
+   * Tests run in parallel, so the names must not be fixed. */
+  dump_prefix = getenv("TEST_PARSE_DUMP_PREFIX");
+  if (dump_prefix) {
+    ExifParams p;
+    FILE *fp;
+    char *name = malloc(strlen(dump_prefix) + 6);
 
-  fp_json = fopen("dump.json", "w+");
-  if (!fp_json) {
-    fprintf(stderr, "Could not open file for json dump. Err %d. Exiting\n", errno);
-    exit(1);
+    if (!name) {
+      exit(1);
+    }
+    sprintf(name, "%s.xml", dump_prefix);
+    fp = fopen(name, "w+");
+    if (!fp) {
+      fprintf(stderr, "Could not open file for xml dump. Err %d. Exiting\n", errno);
+      exit(1);
+    }
+    p.fp = fp;
+    exif_action_dump_xml(d, p);
+    fclose(fp);
+
+    sprintf(name, "%s.json", dump_prefix);
+    fp = fopen(name, "w+");
+    if (!fp) {
+      fprintf(stderr, "Could not open file for json dump. Err %d. Exiting\n", errno);
+      exit(1);
+    }
+    p.fp = fp;
+    exif_action_dump_json(d, p);
+    fclose(fp);
+    free(name);
   }
-  p.fp = fp_json;
-  exif_action_dump_json(d, p);
-  fclose(fp_json);
 
   exif_data_unref(d);
 }

@@ -68,6 +68,24 @@ EXTRA_DIST = \
 	testdata/pentax_makernote_variant_3.jpg \
 	testdata/pentax_makernote_variant_3.jpg.parsed \
 	testdata/pentax_makernote_variant_4.jpg \
-	testdata/pentax_makernote_variant_4.jpg.parsed
+	testdata/pentax_makernote_variant_4.jpg.parsed \
+	testdata/canon_makernote_variant_1.jpg.json \
+	testdata/canon_makernote_variant_1.jpg.xml \
+	testdata/fuji_makernote_variant_1.jpg.json \
+	testdata/fuji_makernote_variant_1.jpg.xml \
+	testdata/olympus_makernote_variant_2.jpg.json \
+	testdata/olympus_makernote_variant_2.jpg.xml \
+	testdata/olympus_makernote_variant_3.jpg.json \
+	testdata/olympus_makernote_variant_3.jpg.xml \
+	testdata/olympus_makernote_variant_4.jpg.json \
+	testdata/olympus_makernote_variant_4.jpg.xml \
+	testdata/olympus_makernote_variant_5.jpg.json \
+	testdata/olympus_makernote_variant_5.jpg.xml \
+	testdata/pentax_makernote_variant_2.jpg.json \
+	testdata/pentax_makernote_variant_2.jpg.xml \
+	testdata/pentax_makernote_variant_3.jpg.json \
+	testdata/pentax_makernote_variant_3.jpg.xml \
+	testdata/pentax_makernote_variant_4.jpg.json \
+	testdata/pentax_makernote_variant_4.jpg.xml
 
 EXTRA_DIST += inc-comparetool.sh
